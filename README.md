@@ -4,7 +4,7 @@ A modern, feature-rich implementation of the classic Tetris game built with vani
 
 🔗 [Play Now](https://tetris-classic.netlify.app/)
 
-![Tetris Gameplay Screenshot](<img width="1919" height="892" alt="image" src="https://github.com/SeanDylan1982/Tetris/blob/main/img/screenshot.png" />
+![Tetris Gameplay Screenshot](<img width="1919" height="892" alt="image" src="https://raw.githubusercontent.com/SeanDylan1982/Tetris/refs/heads/main/img/screenshot.png" />
 )
 
 ## ✨ Features
