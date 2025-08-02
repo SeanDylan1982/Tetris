@@ -2,9 +2,10 @@
 
 A modern, feature-rich implementation of the classic Tetris game built with vanilla JavaScript, HTML5, and CSS3. Experience the timeless puzzle game with smooth animations, multiple music tracks, and user accounts with leaderboards.
 
-🔗 [Play Now](https://tetris-basic.netlify.app/)
+🔗 [Play Now](https://tetris-classic.netlify.app/)
 
-![Tetris Gameplay Screenshot](https://user-images.githubusercontent.com/74496368/207423706-abe7ce07-8d23-4771-a69c-cd9d099598d9.png)
+![Tetris Gameplay Screenshot](<img width="1919" height="892" alt="image" src="https://github.com/user-attachments/assets/b855cefe-493f-4940-9ef7-77044eccae8a" />
+)
 
 ## ✨ Features
 
