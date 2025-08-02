@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Asap:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+    <!-- <link rel="shortcut icon" href="./img/favicon.png" type="image/x-icon"> -->
+    <title>Tetris</title>
+    <meta type="author" content="Sean Dylan Patterson">
+  </head>
+  <body style="overflow: hidden; background-color: #1a1a1a;">
+    <!-- Auth Modal -->
+    <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="authModalLabel">Login / Register</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <!-- Login Form -->
+            <div id="loginForm">
+              <h4>Login</h4>
+              <div class="mb-3">
+                <label for="loginUsername" class="form-label">Username</label>
+                <input type="text" class="form-control" id="loginUsername" required>
+              </div>
+              <div class="mb-3">
+                <label for="loginPassword" class="form-label">Password</label>
+                <input type="password" class="form-control" id="loginPassword" required>
+              </div>
+              <button type="button" id="loginBtn" class="btn btn-primary">Login</button>
+              <p class="mt-3">Don't have an account? <a href="#" id="showRegisterBtn">Register</a></p>
+            </div>
+            
+            <!-- Register Form -->
+            <div id="registerForm" style="display: none;">
+              <h4>Register</h4>
+              <div class="mb-3">
+                <label for="registerUsername" class="form-label">Username</label>
+                <input type="text" class="form-control" id="registerUsername" required>
+              </div>
+              <div class="mb-3">
+                <label for="registerPassword" class="form-label">Password</label>
+                <input type="password" class="form-control" id="registerPassword" required>
+              </div>
+              <div class="mb-3">
+                <label for="confirmPassword" class="form-label">Confirm Password</label>
+                <input type="password" class="form-control" id="confirmPassword" required>
+              </div>
+              <button type="button" id="registerBtn" class="btn btn-success">Register</button>
+              <p class="mt-3">Already have an account? <a href="#" id="showLoginBtn">Login</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- User Profile Modal -->
+    <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="profileModalLabel">User Profile</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="text-center mb-4">
+              <i class="fa fa-user-circle fa-5x"></i>
+              <h4 id="profileUsername" class="mt-2">Username</h4>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <h5>Highest Score</h5>
+                <p id="profileHighScore">0</p>
+              </div>
+              <div class="col-md-6">
+                <h5>Highest Level</h5>
+                <p id="profileHighLevel">1</p>
+              </div>
+            </div>
+            <div class="mt-4">
+              <h5>Total Games Played</h5>
+              <p id="profileGamesPlayed">0</p>
+            </div>
+            <button id="logoutBtn" class="btn btn-danger mt-3">Logout</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Music Selector Modal -->
+    <div class="modal fade" id="musicModal" tabindex="-1" aria-labelledby="musicModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="musicModalLabel">Select Music</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="music-options">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="musicOption" id="noMusic" value="none">
+                <label class="form-check-label" for="noMusic">
+                  No Music
+                </label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="musicOption" id="aTypeMusic1" value="./audio/02. A-Type Music (v1.0).mp3">
+                <label class="form-check-label" for="aTypeMusic1">
+                  A-Type Music (v1.0)
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="musicOption" id="aTypeMusic2" value="./audio/03. A-Type Music (Korobeiniki).mp3" checked>
+                <label class="form-check-label" for="aTypeMusic2">
+                  A-Type Music (Korobeiniki)
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="musicOption" id="bTypeMusic" value="./audio/04. B-Type Music.mp3">
+                <label class="form-check-label" for="bTypeMusic">
+                  B-Type Music
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="musicOption" id="cTypeMusic" value="./audio/05. C-Type Music.mp3">
+                <label class="form-check-label" for="cTypeMusic">
+                  C-Type Music
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id="saveMusicSelection">Save Selection</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Leaderboard Modal -->
+    <div class="modal fade" id="leaderboardModal" tabindex="-1" aria-labelledby="leaderboardModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="leaderboardModalLabel">Leaderboard</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th scope="col">Rank</th>
+                  <th scope="col">Player</th>
+                  <th scope="col">Score</th>
+                  <th scope="col">Level</th>
+                </tr>
+              </thead>
+              <tbody id="leaderboardBody">
+                <!-- Leaderboard entries will be added here dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- New Game Confirmation Modal -->
+    <div class="modal fade" id="newGameModal" tabindex="-1" aria-labelledby="newGameModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="newGameModalLabel">Start New Game?</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            Are you sure you want to start a new game? Your current progress will be lost.
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" id="confirmNewGameBtn" class="btn btn-primary">Start New Game</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="title">
+      <img src="./img/logo.png" alt="Tetris Logo" class="logo" style="display: block; position: sticky; margin: auto; width: 180px; height: 50px; left: 1%; transform: translateX(-150%); padding-bottom: 5px;">
+      <!-- <h1>Tetris</h1> -->
+      <div class="user-controls">
+        <button id="new-game-btn" class="btn tetris-red"><i class="fa fa-refresh"></i> New Game</button>
+        <button type="button" id="auth-btn" class="btn tetris-orange"><i class="fa fa-user"></i> Login</button>
+        <button type="button" id="profile-btn" class="btn tetris-yellow" style="display: none;"><i class="fa fa-user-circle"></i> <span>Profile</span></button>
+        <button type="button" id="leaderboard-btn" class="btn tetris-green"><i class="fa fa-trophy"></i> Leaderboard</button>
+        <button type="button" id="music-btn" class="btn tetris-cyan"> <i class="fa fa-music"></i> Music</button>
+        <button type="submit" name="mute" id="mute-btn" class="btn tetris-purple"> <i class="fa fa-volume-up"></i> </button>
+      </div>
+    </div>
+    <!-- The Game Grid -->
+    <!-- Background Tetromino Outlines -->
+    <svg class="bg-tetromino" style="top: 15%; left: 5%;" width="80" height="80" viewBox="0 0 80 80">
+      <path d="M0,0 L20,0 L20,80 L0,80 Z M20,20 L40,20 L40,40 L20,40 Z" fill="none" stroke="#F94892" stroke-width="2"/>
+    </svg>
+    <svg class="bg-tetromino" style="top: 65%; left: 8%;" width="80" height="80" viewBox="0 0 80 80">
+      <path d="M0,0 L20,0 L20,20 L40,20 L40,40 L0,40 Z" fill="none" stroke="#4CAF50" stroke-width="2"/>
+    </svg>
+    <svg class="bg-tetromino" style="top: 30%; right: 10%;" width="80" height="80" viewBox="0 0 80 80">
+      <path d="M0,0 L60,0 L60,20 L0,20 Z" fill="none" stroke="#2196F3" stroke-width="2"/>
+    </svg>
+    <svg class="bg-tetromino" style="top: 75%; right: 15%;" width="80" height="80" viewBox="0 0 80 80">
+      <path d="M20,0 L40,0 L40,20 L60,20 L60,40 L20,40 L20,0 Z" fill="none" stroke="#FF9800" stroke-width="2"/>
+    </svg>
+    <svg class="bg-tetromino" style="top: 45%; left: 15%;" width="80" height="80" viewBox="0 0 80 80">
+      <path d="M0,0 L40,0 L40,40 L0,40 Z" fill="none" stroke="#9C27B0" stroke-width="2"/>
+    </svg>
+    <svg class="bg-tetromino" style="top: 20%; right: 20%;" width="80" height="80" viewBox="0 0 80 80">
+      <path d="M20,0 L40,0 L40,20 L60,20 L60,40 L40,40 L40,60 L20,60 L20,0 Z" fill="none" stroke="#F44336" stroke-width="2"/>
+    </svg>
+    
+    <div class="game-over-screen">
+      <h2>GAME OVER</h2>
+      <div class="final-stats">
+        <div class="final-score">Score: <span id="final-score">0</span></div>
+        <div class="final-level">Level: <span id="final-level">1</span></div>
+      </div>
+      <button id="play-again-btn" class="btn btn-success">Play Again</button>
+    </div>
+    
+
+    <!-- Game Grid -->
+    <div class="container">
+      <div class="grid">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <!-- Taken/Still Squares -->
+        <div class="taken"></div>
+        <div class="taken"></div>
+        <div class="taken"></div>
+        <div class="taken"></div>
+        <div class="taken"></div>
+        <div class="taken"></div>
+        <div class="taken"></div>
+        <div class="taken"></div>
+        <div class="taken"></div>
+        <div class="taken"></div>
+      </div>
+      <!-- This new div will stack the two panels -->
+      <div class="side-panel">
+        <!-- Score and Play/Pause Button -->
+        <div class="controls">
+          <h3>Score: <span id="score">0</span></h3>
+          <h3>Level: <span id="level">1</span></h3>
+          <button id="start-button">Start/Pause</button>
+        </div>
+        <br></br>
+        <!-- The Mini Grid -->
+        <div class="mini-grid">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </div>
+    </div>
+    <script src="./app.js"></script>
+  </body>
+</html>

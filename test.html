@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tetris Line Clearing Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a1a1a;
+            color: white;
+            padding: 20px;
+        }
+        .test-grid {
+            width: 286px;
+            height: 600px;
+            display: flex;
+            flex-wrap: wrap;
+            background-color: #1a1a1a;
+            border: 3px solid #0059ff;
+            margin: 20px 0;
+        }
+        .test-grid div {
+            box-sizing: border-box;
+            height: 28px;
+            width: 28px;
+            border: 1px solid #333;
+        }
+        .filled {
+            background-color: #e0194b;
+        }
+        .taken {
+            background-color: #808080;
+        }
+        button {
+            background-color: #ff9900;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #e68a00;
+        }
+        .test-info {
+            background-color: #333;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tetris Line Clearing Test</h1>
+    
+    <div class="test-info">
+        <h3>Test Instructions:</h3>
+        <ol>
+            <li>Click "Fill Row 18" to fill the bottom row completely</li>
+            <li>Click "Fill Row 17" to fill the second row completely</li>
+            <li>Click "Clear Lines" to test the line clearing functionality</li>
+            <li>Observe that completed rows disappear and score increases</li>
+        </ol>
+    </div>
+    
+    <div class="test-grid" id="testGrid">
+        <!-- Grid will be populated by JavaScript -->
+    </div>
+    
+    <div>
+        <button onclick="fillRow(18)">Fill Row 18</button>
+        <button onclick="fillRow(17)">Fill Row 17</button>
+        <button onclick="fillRow(16)">Fill Row 16</button>
+        <button onclick="clearLines()">Clear Lines</button>
+        <button onclick="resetGrid()">Reset Grid</button>
+    </div>
+    
+    <div class="test-info">
+        <h3>Score: <span id="testScore">0</span></h3>
+        <h3>Lines Cleared: <span id="linesCleared">0</span></h3>
+    </div>
+
+    <script>
+        const width = 10;
+        const height = 20;
+        let squares = [];
+        let score = 0;
+        let linesCleared = 0;
+
+        // Initialize the test grid
+        function initializeGrid() {
+            const grid = document.getElementById('testGrid');
+            grid.innerHTML = '';
+            
+            // Create 200 empty squares (20 rows * 10 columns)
+            for (let i = 0; i < 200; i++) {
+                const div = document.createElement('div');
+                grid.appendChild(div);
+            }
+            
+            // Create 10 floor squares
+            for (let i = 0; i < 10; i++) {
+                const div = document.createElement('div');
+                div.classList.add('taken');
+                grid.appendChild(div);
+            }
+            
+            squares = Array.from(document.querySelectorAll('#testGrid div'));
+        }
+
+        // Fill a specific row
+        function fillRow(row) {
+            const rowStartIndex = row * width;
+            for (let col = 0; col < width; col++) {
+                const index = rowStartIndex + col;
+                squares[index].classList.add('taken');
+                squares[index].classList.add('filled');
+            }
+        }
+
+        // Clear completed lines (same logic as the fixed addScore function)
+        function clearLines() {
+            let linesClearedThisTurn = 0;
+            
+            // Check each row from bottom to top (excluding the bottom floor row)
+            for (let row = 18; row >= 0; row--) {
+                const rowStartIndex = row * width;
+                const rowIndices = [];
+                
+                // Get all indices for this row
+                for (let col = 0; col < width; col++) {
+                    rowIndices.push(rowStartIndex + col);
+                }
+                
+                // Check if the entire row is filled
+                if (rowIndices.every((index) => squares[index].classList.contains("taken"))) {
+                    linesClearedThisTurn++;
+                    
+                    // Remove the completed row
+                    rowIndices.forEach((index) => {
+                        squares[index].classList.remove("taken");
+                        squares[index].classList.remove("filled");
+                        squares[index].style.backgroundColor = "";
+                    });
+                    
+                    // Move all rows above down by one
+                    for (let moveRow = row; moveRow > 0; moveRow--) {
+                        for (let col = 0; col < width; col++) {
+                            const currentIndex = moveRow * width + col;
+                            const aboveIndex = (moveRow - 1) * width + col;
+                            
+                            // Copy the class and style from the row above
+                            const currentSquare = squares[currentIndex];
+                            const aboveSquare = squares[aboveIndex];
+                            
+                            currentSquare.className = aboveSquare.className;
+                            currentSquare.style.backgroundColor = aboveSquare.style.backgroundColor;
+                        }
+                    }
+                    
+                    // Clear the top row
+                    for (let col = 0; col < width; col++) {
+                        const topIndex = col;
+                        squares[topIndex].classList.remove("taken");
+                        squares[topIndex].classList.remove("filled");
+                        squares[topIndex].style.backgroundColor = "";
+                    }
+                    
+                    // Since we cleared a row, we need to check the same row again
+                    // because rows above have moved down
+                    row++;
+                }
+            }
+            
+            // Update score and display
+            if (linesClearedThisTurn > 0) {
+                const pointsPerLine = [0, 100, 300, 500, 800]; // 0, 1, 2, 3, 4 lines
+                score += pointsPerLine[linesClearedThisTurn];
+                linesCleared += linesClearedThisTurn;
+                
+                document.getElementById('testScore').textContent = score;
+                document.getElementById('linesCleared').textContent = linesCleared;
+                
+                console.log(`Cleared ${linesClearedThisTurn} lines! Score: ${score}`);
+            }
+        }
+
+        // Reset the grid
+        function resetGrid() {
+            initializeGrid();
+            score = 0;
+            linesCleared = 0;
+            document.getElementById('testScore').textContent = score;
+            document.getElementById('linesCleared').textContent = linesCleared;
+        }
+
+        // Initialize when page loads
+        window.onload = function() {
+            initializeGrid();
+        };
+    </script>
+</body>
+</html> 
